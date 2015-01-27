@@ -14,7 +14,7 @@ import static org.cron.validator.result.Results.Success;
 import static org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class SecondsValueValidatorTest {
+public class SecondsSuccessValueValidatorTest {
 
     @Parameters
     public static Collection<Object[]> dataset() {
@@ -104,7 +104,7 @@ public class SecondsValueValidatorTest {
     private final String expression;
     private final ValidationResult expectedResult;
 
-    public SecondsValueValidatorTest(String expression, ValidationResult expectedResult) {
+    public SecondsSuccessValueValidatorTest(String expression, ValidationResult expectedResult) {
         this.expression = expression;
         this.expectedResult = expectedResult;
     }
@@ -114,6 +114,6 @@ public class SecondsValueValidatorTest {
     @Test
     public void testValidation() {
         ValidationResult actual = validator.validate(expression);
-        Assert.assertEquals("expected: "+expectedResult+", but get "+actual, expectedResult, actual);
+        Assert.assertEquals(expression +"| expected: "+expectedResult+", but get "+actual, expectedResult, actual);
     }
 }

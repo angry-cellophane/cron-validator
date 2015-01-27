@@ -1,5 +1,7 @@
 package org.cron.validator.result;
 
+import java.util.Arrays;
+
 import static org.cron.validator.result.ResultType.ERROR;
 import static org.cron.validator.result.ResultType.VALID;
 import static org.cron.validator.result.ResultType.WARNING;
@@ -11,9 +13,27 @@ public class Results {
         private final ResultType type;
         private final String message;
 
-        private Message(ResultType type, String message) {
+        private Message(ResultType type, String message, String cron, int index) {
             this.type = type;
-            this.message = message;
+            this.message = createMessage(message, cron, index);
+        }
+
+        private String createMessage(String message, String cron, int index) {
+            return new StringBuilder(cron.length() << 2)
+                     .append(cron)
+                     .append('\n')
+                     .append(tabs(index))
+                     .append("^- ")
+                     .append(message)
+                     .toString();
+        }
+
+        private char[] tabs(int index) {
+            if (index == 0) return new char[0];
+
+            char[] c = new char[index - 1];
+            Arrays.fill(c, ' ');
+            return c;
         }
 
         @Override
@@ -48,7 +68,7 @@ public class Results {
 
         @Override
         public String toString() {
-            return type+" : " + message;
+            return type+":\n" + message;
         }
     }
 
@@ -66,12 +86,12 @@ public class Results {
         return SUCCESS;
     }
 
-    public static MessageValidationResult Error(String message) {
-        return new Message(ERROR, message);
+    public static MessageValidationResult Error(String message, String cronExpression, int index) {
+        return new Message(ERROR, message, cronExpression, index);
     }
 
-    public static MessageValidationResult Warning(String message) {
-        return new Message(WARNING, message);
+    public static MessageValidationResult Warning(String message, String cronExpression, int index) {
+        return new Message(WARNING, message, cronExpression, index);
     }
 
     private Results(){}
