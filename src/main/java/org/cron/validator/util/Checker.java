@@ -5,6 +5,7 @@ import org.cron.validator.Errors;
 import org.cron.validator.result.ValidationResult;
 
 import static org.cron.validator.Errors.ALL_OR_NUMBER;
+import static org.cron.validator.Errors.NON_ZERO;
 import static org.cron.validator.Errors.NUMBER_0_5;
 import static org.cron.validator.Errors.NUMBER_0_9;
 import static org.cron.validator.result.Results.Error;
@@ -30,6 +31,17 @@ public class Checker {
         if (!from0to5(d1)) return Error(NUMBER_0_5, cron, i);
         char d2 = cron.charAt(i + 1);
         if (!from0to9(d2)) return Error(NUMBER_0_9, cron, i + 1);
+
+        return Success();
+    }
+
+    public static ValidationResult checkNonZeroNumbers(String cron, int i) {
+        char d1 = cron.charAt(i);
+        if (!from0to5(d1)) return Error(NUMBER_0_5, cron, i);
+        char d2 = cron.charAt(i + 1);
+        if (!from0to9(d2)) return Error(NUMBER_0_9, cron, i + 1);
+
+        if (d1 == '0' && d2 == '0') return Error(NON_ZERO, cron, i);
 
         return Success();
     }

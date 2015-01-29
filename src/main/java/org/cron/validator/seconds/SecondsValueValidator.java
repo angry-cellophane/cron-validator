@@ -6,14 +6,17 @@ import org.cron.validator.result.ValidationResult;
 import static org.cron.validator.Errors.EMPTY_VALUE;
 import static org.cron.validator.Errors.RANGE;
 import static org.cron.validator.Errors.SLASH;
-import static org.cron.validator.Errors.SLASH_0;
+import static org.cron.validator.Errors.NON_ZERO;
 import static org.cron.validator.Errors.UNEXPECTED_SYMBOL;
 import static org.cron.validator.result.ResultType.VALID;
 import static org.cron.validator.result.Results.Error;
 import static org.cron.validator.result.Results.Success;
 import static org.cron.validator.util.Checker.checkAllOrNumber;
+import static org.cron.validator.util.Checker.checkNonZeroNumbers;
 import static org.cron.validator.util.Checker.checkNumber;
 import static org.cron.validator.util.Checker.checkNumbers;
+import static org.cron.validator.util.Extractor.numberFrom;
+import static org.cron.validator.util.Extractor.numbersFrom;
 
 public class SecondsValueValidator implements CronValidator {
 
@@ -64,7 +67,7 @@ public class SecondsValueValidator implements CronValidator {
             case '/':
                 return cron.charAt(2) != '0'
                         ? Success()
-                        : Error(SLASH_0, cron, 2);
+                        : Error(NON_ZERO, cron, 2);
             default:
                 return Error(UNEXPECTED_SYMBOL, cron, 1);
         }
@@ -78,7 +81,13 @@ public class SecondsValueValidator implements CronValidator {
                 r = c2 == '-' ? checkNumber(cron, 0) : checkAllOrNumber(cron, 0);
                 if (r.resultType() != VALID) return r;
 
-                if ((r = checkNumbers(cron, 2)).resultType() != VALID) return r;
+                if (c2 == '-') {
+                    int d1 = numberFrom(cron, 0);
+                    int d2 = numbersFrom(cron, 2);
+                    if (d1 >= d2) return Error(RANGE, cron, 2);
+                }
+
+                if ((r = checkNonZeroNumbers(cron, 2)).resultType() != VALID) return r;
 
                 return r;
             default:
@@ -93,7 +102,7 @@ public class SecondsValueValidator implements CronValidator {
         ValidationResult result = checkNumbers(cron, 0);
         if (result.resultType() != VALID) return result;
 
-        result = checkNumbers(cron, 3);
+        result = checkNonZeroNumbers(cron, 3);
         if (result.resultType() != VALID) return result;
 
         if (cron.charAt(2) != '/') return Error(SLASH, cron, 2);

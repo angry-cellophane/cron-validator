@@ -13,7 +13,7 @@ public class Errors {
     public static final String NUMBER_0_5 = "Expected a number from 0 to 5";
     public static final String SLASH = "Expected '/'";
     public static final String RANGE = "Should be bigger than the left range number";
-    public static final String SLASH_0 = "Should be > 0";
+    public static final String NON_ZERO = "Should be > 0";
 
     private Errors(){}
 }
