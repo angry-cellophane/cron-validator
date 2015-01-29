@@ -34,16 +34,19 @@ public class SecondsValueValidator implements CronValidator {
             case 5:
                 return five(cronExpression);
             default:
+                ValidationResult r = five(cronExpression);
+                if (r.resultType() != VALID) return r;
+
                 return Error(UNEXPECTED_SYMBOL, cronExpression, 6);
         }
     }
 
     private ValidationResult one(String cron) {
-        return checkNumber(cron, 0);
+        return checkAllOrNumber(cron, 0);
     }
 
     private ValidationResult two(String cron) {
-        return checkNumbers(cron, 0, 1);
+        return checkNumbers(cron, 0);
     }
 
     private ValidationResult three(String cron) {
@@ -68,14 +71,29 @@ public class SecondsValueValidator implements CronValidator {
     }
 
     private ValidationResult four(String cron) {
-        return null;
+        char c2 = cron.charAt(1);
+        ValidationResult r;
+        switch (c2) {
+            case '-': case '/':
+                r = c2 == '-' ? checkNumber(cron, 0) : checkAllOrNumber(cron, 0);
+                if (r.resultType() != VALID) return r;
+
+                if ((r = checkNumbers(cron, 2)).resultType() != VALID) return r;
+
+                return r;
+            default:
+                if ((r = checkNumbers(cron, 0)).resultType() != VALID) return r;
+                if (cron.charAt(2) != '/') return Error(SLASH, cron, 2);
+                if ((r = checkNumber(cron, 3)).resultType() != VALID) return r;
+                return r;
+        }
     }
 
     private ValidationResult five(String cron) {
-        ValidationResult result = checkNumbers(cron, 0, 1);
+        ValidationResult result = checkNumbers(cron, 0);
         if (result.resultType() != VALID) return result;
 
-        result = checkNumbers(cron, 3, 4);
+        result = checkNumbers(cron, 3);
         if (result.resultType() != VALID) return result;
 
         if (cron.charAt(2) != '/') return Error(SLASH, cron, 2);

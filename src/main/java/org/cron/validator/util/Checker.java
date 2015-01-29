@@ -25,11 +25,11 @@ public class Checker {
         return c >= ZERO && c <= FIVE;
     }
 
-    public static ValidationResult checkNumbers(String cron, int i1, int i2) {
-        char d1 = cron.charAt(i1);
-        if (!from0to5(d1)) return Error(NUMBER_0_5, cron, i1);
-        char d2 = cron.charAt(i2);
-        if (!from0to9(d2)) return Error(NUMBER_0_9, cron, i2);
+    public static ValidationResult checkNumbers(String cron, int i) {
+        char d1 = cron.charAt(i);
+        if (!from0to5(d1)) return Error(NUMBER_0_5, cron, i);
+        char d2 = cron.charAt(i + 1);
+        if (!from0to9(d2)) return Error(NUMBER_0_9, cron, i + 1);
 
         return Success();
     }

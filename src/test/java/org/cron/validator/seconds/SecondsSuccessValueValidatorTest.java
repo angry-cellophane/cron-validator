@@ -114,6 +114,6 @@ public class SecondsSuccessValueValidatorTest {
     @Test
     public void testValidation() {
         ValidationResult actual = validator.validate(expression);
-        Assert.assertEquals(expression +"| expected: "+expectedResult+", but get "+actual, expectedResult, actual);
+        Assert.assertEquals("{ "+expression +" } expected: "+expectedResult+", but get "+actual, expectedResult, actual);
     }
 }
